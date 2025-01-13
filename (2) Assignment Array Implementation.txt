@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <tuple>
+#include <iomanip>
+
+using namespace std;
+
+// Define a structure to store each non-zero element
+struct Element {
+    int row;
+    int col;
+    int value;
+};
+
+// Class for Sparse Matrix
+class SparseMatrix {
+private:
+    int rows, cols;
+    vector<Element> elements;  // To store non-zero elements
+
+public:
+    // Constructor to initialize the sparse matrix
+    SparseMatrix(int r, int c) : rows(r), cols(c) {}
+
+    // Function to add a non-zero element
+    void addElement(int row, int col, int value) {
+        if (value != 0) {
+            elements.push_back({row, col, value});
+        }
+    }
+
+    // Function to display the matrix in sparse form
+    void display() {
+        cout << "Sparse Matrix: \n";
+        cout << "Row  Col  Value\n";
+        for (const auto &elem : elements) {
+            cout << elem.row << "    " << elem.col << "    " << elem.value << "\n";
+        }
+    }
+
+    // Function to perform matrix addition with another sparse matrix
+    SparseMatrix add(const SparseMatrix &other) {
+        SparseMatrix result(rows, cols);
+        
+        // Add elements from the current matrix
+        for (const auto &elem : elements) {
+            result.addElement(elem.row, elem.col, elem.value);
+        }
+
+        // Add elements from the other matrix
+        for (const auto &elem : other.elements) {
+            result.addElement(elem.row, elem.col, elem.value);
+        }
+
+        return result;
+    }
+
+    // Function to perform matrix multiplication with another sparse matrix
+    SparseMatrix multiply(const SparseMatrix &other) {
+        SparseMatrix result(rows, other.cols);
+        
+        // Iterate over all elements and perform multiplication logic
+        for (const auto &elemA : elements) {
+            for (const auto &elemB : other.elements) {
+                if (elemA.col == elemB.row) {  // Valid multiplication condition
+                    int value = elemA.value * elemB.value;
+                    result.addElement(elemA.row, elemB.col, value);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Function to get the value at a specific row and column (if any)
+    int getValue(int row, int col) {
+        for (const auto &elem : elements) {
+            if (elem.row == row && elem.col == col) {
+           
